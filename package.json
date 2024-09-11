@@ -3,13 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "pnpm -r test",
-    "lint": "pnpm -r lint",
-    "test:package": "pnpm -r --filter='./packages/popup-provider' run test",
-    "build:package": "pnpm -r --filter='./packages/popup-provider' run build",
-    "build:web": "pnpm -r --filter='./packages/web' run build"
-  },
   "keywords": [],
   "author": "muffindex",
   "license": "MIT",

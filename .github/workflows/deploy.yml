@@ -1,9 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy Web Application
 
 on:
   push:
     branches:
-      - main # Cambia esto si deseas desplegar desde otra rama
+      - main
 
 jobs:
   build-and-deploy:
@@ -16,22 +16,21 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Cambia al número de versión que usa tu proyecto
-
+          node-version: '18'
       - name: Install pnpm
         run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build the Popup Provider
-        run: pnpm run build:package
+      - name: Build library
+        run: pnpm --filter='./packages/popup-provider' run build
 
-      - name: Build the Application
-        run: pnpm run build:web
+      - name: Build web aplication
+        run: pnpm --filter='./packages/web' run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./packages/web/dist
