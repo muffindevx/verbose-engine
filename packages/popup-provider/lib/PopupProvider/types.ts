@@ -14,7 +14,7 @@ export interface PopupProperties {
 
 export type PopupProps = {
   onClose: (id: string) => void;
-} & PopupProperties;
+} & Omit<PopupProperties, 'contentComponent'>;
 
 export interface usePopupsProps {
   addPopup: (props: PopupProperties) => void;

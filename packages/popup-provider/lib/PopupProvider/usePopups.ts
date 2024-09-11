@@ -3,7 +3,7 @@ import type { PopupProperties } from './types';
 import usePopupProviderStore from './usePopupProviderStore';
 
 export default function usePopups() {
-  const { popups, add, close, closeAll } = usePopupProviderStore((state) => state);
+  const { add, close, closeAll } = usePopupProviderStore();
 
   function addPopup(properties: Omit<PopupProperties, 'id'>) {
     const id = RandomNumber.generateRandomString(64);
@@ -18,7 +18,6 @@ export default function usePopups() {
   }
 
   return {
-    popups,
     addPopup,
     closeAll,
     closePopup,

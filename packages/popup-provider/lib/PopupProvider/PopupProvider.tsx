@@ -1,14 +1,15 @@
-import { type ReactNode } from 'react';
+import { useCallback, type ReactNode } from 'react';
 import usePopups from './usePopups';
 import Popup from './Popup';
 import Button from '../Button/Button';
+import usePopupProviderStore from './usePopupProviderStore';
 
 export default function PopupProvider({ children }: { children: ReactNode }) {
-  const { popups, addPopup, closePopup } = usePopups();
+  const popups = usePopupProviderStore((state) => state.popups);
+  const { addPopup, closePopup } = usePopups();
 
-  function handleClose(id: string) {
-    closePopup(id);
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleClose = useCallback((id: string) => closePopup(id), []);
 
   function handleAddPopup() {
     addPopup({
@@ -54,9 +55,10 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
               id={popup.id}
               defaultPosition={popup.defaultPosition}
               title={popup.title}
-              contentComponent={popup.contentComponent}
               onClose={handleClose}
-            />
+            >
+              {popup.contentComponent}
+            </Popup>
           );
         })}
       </div>
