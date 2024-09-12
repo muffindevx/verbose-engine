@@ -18,8 +18,10 @@ export interface PopupProperties {
 }
 
 export type PopupProps = {
+  onActive: (id: string) => void;
   onClose: (id: string) => void;
   windowPosition: Size | null;
+  isActive?: boolean;
 } & Omit<PopupProperties, 'contentComponent'>;
 
 export interface usePopupsProps {
@@ -30,7 +32,9 @@ export interface usePopupsProps {
 
 export interface PopupProviderState {
   popups: PopupProperties[];
+  popupActiveId: string;
   add: (props: PopupProperties) => void;
   close: (id: string) => void;
   closeAll: () => void;
+  setActive: (id: string) => void;
 }

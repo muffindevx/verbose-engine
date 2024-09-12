@@ -61,7 +61,9 @@ const Popup = ({
   children,
   defaultPosition,
   windowPosition,
+  isActive = false,
   onClose,
+  onActive,
 }: PropsWithChildren<PopupProps>) => {
   const internalRef = useRef<HTMLDivElement>(null);
   useRecalculatePositionPopup(internalRef, windowPosition);
@@ -70,12 +72,20 @@ const Popup = ({
     onClose(id);
   }
 
+  function handleDragStart() {
+    onActive(id);
+  }
+
   return (
     <Rnd
       default={defaultPosition}
       enableResizing={false}
       bounds="parent"
       key={id}
+      style={{
+        zIndex: isActive ? 1 : 0,
+      }}
+      onDragStart={handleDragStart}
     >
       <div
         ref={internalRef}

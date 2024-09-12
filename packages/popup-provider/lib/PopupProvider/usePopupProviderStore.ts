@@ -3,6 +3,7 @@ import type { PopupProviderState, PopupProperties } from './types';
 
 const usePopupProviderStore = create<PopupProviderState>()((set) => ({
   popups: [],
+  popupActiveId: '',
   add: (props: PopupProperties) => set((state) => ({ popups: state.popups.concat(props) })),
   closeAll: () => set(() => ({ popups: [] })),
   close: (id: string) =>
@@ -11,6 +12,12 @@ const usePopupProviderStore = create<PopupProviderState>()((set) => ({
       state.popups.splice(popupIndex, 1);
       return {
         popups: state.popups,
+      };
+    }),
+  setActive: (id: string) =>
+    set(() => {
+      return {
+        popupActiveId: id,
       };
     }),
 }));

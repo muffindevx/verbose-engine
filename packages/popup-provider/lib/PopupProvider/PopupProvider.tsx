@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import usePopups from './usePopups';
 import Popup from './Popup';
@@ -14,6 +15,8 @@ const MINIMUM_WINDOW_SIZE = {
 export default function PopupProvider({ children }: { children: ReactNode }) {
   const parentRef = useRef<HTMLDivElement>(null);
   const popups = usePopupProviderStore((state) => state.popups);
+  const setActive = usePopupProviderStore((state) => state.setActive);
+  const popupActiveId = usePopupProviderStore((state) => state.popupActiveId);
   const { addPopup, closePopup } = usePopups();
   const [windowPosition, setWindowPosition] = useState<Size | null>(null);
 
@@ -37,8 +40,8 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
     };
   }, [parentRef]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleClose = useCallback((id: string) => closePopup(id), []);
+  const handleActive = useCallback((id: string) => setActive(id), []);
 
   function handleAddPopup() {
     addPopup({
@@ -78,7 +81,7 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
       </header>
       <div
         ref={parentRef}
-        className="popup-container relative h-full w-full border-2 border-dotted rounded-sm border-gray-300 dark:border-gray-700"
+        className="popup-container relative isolate h-full w-full border-2 border-dotted rounded-sm border-gray-300 dark:border-gray-700"
       >
         {popups?.map((popup) => {
           return (
@@ -87,8 +90,10 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
               id={popup.id}
               defaultPosition={popup.defaultPosition}
               title={popup.title}
+              onActive={handleActive}
               onClose={handleClose}
               windowPosition={windowPosition}
+              isActive={popupActiveId === popup.id}
             >
               {popup.contentComponent}
             </Popup>
