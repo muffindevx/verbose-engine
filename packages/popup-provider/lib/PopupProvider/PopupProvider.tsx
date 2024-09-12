@@ -1,12 +1,41 @@
-import { useCallback, type ReactNode } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import usePopups from './usePopups';
 import Popup from './Popup';
 import Button from '../Button/Button';
 import usePopupProviderStore from './usePopupProviderStore';
+import Utils from './utils';
+import type { Size } from './types';
+
+const MINIMUM_WINDOW_SIZE = {
+  height: 150,
+  width: 150,
+};
 
 export default function PopupProvider({ children }: { children: ReactNode }) {
+  const parentRef = useRef<HTMLDivElement>(null);
   const popups = usePopupProviderStore((state) => state.popups);
   const { addPopup, closePopup } = usePopups();
+  const [windowPosition, setWindowPosition] = useState<Size | null>(null);
+
+  useLayoutEffect(() => {
+    const debouncedResize = Utils.debounce(function resize() {
+      if (
+        window.innerWidth > MINIMUM_WINDOW_SIZE.width ||
+        window.innerHeight > MINIMUM_WINDOW_SIZE.height
+      ) {
+        setWindowPosition({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      }
+    });
+
+    window.addEventListener('resize', debouncedResize);
+
+    return () => {
+      window.removeEventListener('resize', debouncedResize);
+    };
+  }, [parentRef]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleClose = useCallback((id: string) => closePopup(id), []);
@@ -47,7 +76,10 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
           <Button onClick={handleAddPopupB}>Agregar Popup Tipo B</Button>
         </div>
       </header>
-      <div className="popup-container relative h-full w-full border-2 border-dotted rounded-sm border-gray-300 dark:border-gray-700">
+      <div
+        ref={parentRef}
+        className="popup-container relative h-full w-full border-2 border-dotted rounded-sm border-gray-300 dark:border-gray-700"
+      >
         {popups?.map((popup) => {
           return (
             <Popup
@@ -56,6 +88,7 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
               defaultPosition={popup.defaultPosition}
               title={popup.title}
               onClose={handleClose}
+              windowPosition={windowPosition}
             >
               {popup.contentComponent}
             </Popup>

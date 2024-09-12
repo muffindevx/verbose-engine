@@ -1,9 +1,14 @@
-export type Position = {
+export type Coords = {
   x: number;
   y: number;
+};
+
+export type Size = {
   width: number;
   height: number;
 };
+
+export type Position = Coords & Size;
 
 export interface PopupProperties {
   id: string;
@@ -14,6 +19,7 @@ export interface PopupProperties {
 
 export type PopupProps = {
   onClose: (id: string) => void;
+  windowPosition: Size | null;
 } & Omit<PopupProperties, 'contentComponent'>;
 
 export interface usePopupsProps {
